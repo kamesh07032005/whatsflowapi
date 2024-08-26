@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhatsApp Clone</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      #login-container {
+        text-align: center;
+        margin-top: 100px;
+      }
+      #whatsapp-ui {
+        display: none;
+      }
+      #message-list {
+        height: 400px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+      #message-input {
+        width: 80%;
+        padding: 10px;
+      }
+      #send-button {
+        padding: 10px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="login-container">
+      <h1>WhatsApp Clone</h1>
+      <button onclick="launchWhatsAppSignup()">Connect with Facebook</button>
+    </div>
+
+    <div id="whatsapp-ui">
+      <h2>WhatsApp Messages</h2>
+      <div id="message-list"></div>
+      <input type="text" id="message-input" placeholder="Type a message..." />
+      <button id="send-button" onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+      window.fbAsyncInit = function () {
+        FB.init({
+          appId: "YOUR_FACEBOOK_APP_ID", // Replace with your Facebook App ID
+          cookie: true,
+          xfbml: true,
+          version: "v20.0",
+        });
+      };
+
+      (function (d, s, id) {
+        var js,
+          fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      })(document, "script", "facebook-jssdk");
+
+      function launchWhatsAppSignup() {
+        FB.login(
+          function (response) {
+            if (response.authResponse) {
+              console.log("Successfully logged in with Facebook");
+              showWhatsAppUI();
+            } else {
+              console.log("User cancelled login or did not fully authorize.");
+            }
+          },
+          {
+            scope: "public_profile,email",
+            return_scopes: true,
+          }
+        );
+      }
+
+      function showWhatsAppUI() {
+        document.getElementById("login-container").style.display = "none";
+        document.getElementById("whatsapp-ui").style.display = "block";
+        loadMessages();
+      }
+
+      function loadMessages() {
+        // This is where you would typically load messages from a server
+        // For this example, we'll just add some dummy messages
+        const messageList = document.getElementById("message-list");
+        messageList.innerHTML = `
+                <p><strong>John:</strong> Hey there!</p>
+                <p><strong>You:</strong> Hi John, how are you?</p>
+                <p><strong>John:</strong> I'm good, thanks for asking!</p>
+            `;
+      }
+
+      function sendMessage() {
+        const messageInput = document.getElementById("message-input");
+        const messageList = document.getElementById("message-list");
+        if (messageInput.value.trim() !== "") {
+          messageList.innerHTML += `<p><strong>You:</strong> ${messageInput.value}</p>`;
+          messageInput.value = "";
+          messageList.scrollTop = messageList.scrollHeight;
+        }
+      }
+    </script>
+  </body>
+</html>
